@@ -12,15 +12,9 @@ ENV REGISTRY="https://registry.npmjs.org"
 ENV TOKEN=""
 ENV SCHEDULE=""
 
-WORKDIR /app
+RUN npm i -g @p26e/harvest-npm
 
-COPY package.json .
-COPY package-lock.json .
-COPY src/ ./src/
-
-RUN npm i
-
-ENTRYPOINT node /app/src/cli.js \
+ENTRYPOINT harvest-npm \
 	--pinfile $PINFILE \
 	--lockfile $LOCKFILE \
 	--cachefile $CACHEFILE \

@@ -43,7 +43,7 @@ const cli = meow(
     --token       Optional Bearer token for the registry.
     --watch       Run every time the pinfile changes after the inital execution.
     --schedule    Specity a cron style scheduled interval where the registry
-                  should sync. Example: 
+                  should sync. Example: '0 2 * * *' (every night at 2 AM).
 `,
 	{
 		importMeta: import.meta,
