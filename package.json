@@ -1,6 +1,6 @@
 {
   "name": "@p26e/harvest-npm",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Harvest npm packages for offline use.",
   "author": "@p26e",
   "license": "MIT",
