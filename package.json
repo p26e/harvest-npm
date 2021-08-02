@@ -1,8 +1,8 @@
 {
-  "name": "@pstnorge/harvest-npm",
+  "name": "@p26e/harvest-npm",
   "version": "1.0.0",
   "description": "Harvest npm packages for offline use.",
-  "author": "@PSTNorge",
+  "author": "@p26e",
   "license": "MIT",
   "type": "module",
   "main": "src/index.js",
