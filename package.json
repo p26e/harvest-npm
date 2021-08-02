@@ -1,0 +1,27 @@
+{
+  "name": "@pstnorge/harvest-npm",
+  "version": "1.0.0",
+  "description": "Harvest npm packages for offline use.",
+  "author": "@PSTNorge",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "harvest-npm": "src/cli.js"
+  },
+  "scripts": {
+    "release:patch": "npm version patch && npm publish --access public && git push origin master --follow-tags",
+    "release:minor": "npm version minor && npm publish --access public && git push origin master --follow-tags",
+    "release:major": "npm version major && npm publish --access public && git push origin master --follow-tags"
+  },
+  "dependencies": {
+    "@npmcli/arborist": "^2.7.1",
+    "md5": "^2.3.0",
+    "meow": "^10.1.0",
+    "node-cron": "^3.0.0",
+    "pacote": "^11.3.5",
+    "proper-lockfile": "^4.1.2",
+    "registry-sync": "^3.2.4",
+    "semver": "^7.3.5"
+  }
+}
