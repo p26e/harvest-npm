@@ -8,7 +8,6 @@ import cron from "node-cron";
 import { lock } from "proper-lockfile";
 import {
 	locateNewPackages,
-	updateLockfile,
 	generateManifest,
 	createPrebuildBinaryProperties,
 	downloadPackages,
@@ -23,10 +22,11 @@ const cli = meow(
   Options
     --pinfile     Location of the pinfile. Default: pinfile.json.
     --lockfile    Location of the lockfile. Default: lockfile.json.
-    --cachefile   Location of the cachefile. Default: cachefile.json
     --outputDir   Direcotry to output packages in. Default: registry.
-    --baseUrl     URL where the downloaded packages will be exposed, needed when
-                  generating metadata for packages.
+    --baseUrl     URL where the downloaded packages will be exposed, used when
+                  generating metadata for packages. Only needed if you're going
+									to serve the output directory as static files. Default:
+									http://registry.local/npm
     --abi         Node C++ ABI numbers used when downloading pre-built binaries.
                   Can be specified multiple times. See the  NODE_MODULE_VERSION
                   column at https://nodejs.org/en/download/releases/. Default:
@@ -42,8 +42,8 @@ const cli = meow(
                   https://registry.npmjs.org
     --token       Optional Bearer token for the registry.
     --watch       Run every time the pinfile changes after the inital execution.
-    --schedule    Specity a cron style scheduled interval where the registry
-                  should sync. Example: '0 2 * * *' (every night at 2 AM).
+    --schedule    A cron style scheduled interval when the registry should sync.
+                  Example: '0 2 * * *' (every night at 2 AM).
 `,
 	{
 		importMeta: import.meta,
@@ -56,17 +56,13 @@ const cli = meow(
 				type: "string",
 				default: "lockfile.json",
 			},
-			cachefile: {
-				type: "string",
-				default: "cachefile.json",
-			},
 			outputDir: {
 				type: "string",
 				default: "registry",
 			},
 			baseUrl: {
 				type: "string",
-				isRequired: true,
+				default: "http://registry.local/npm",
 			},
 			abi: {
 				type: "number",
@@ -131,7 +127,7 @@ async function harvest() {
 			);
 			try {
 				logger.info("Downloading packages.");
-				await downloadPackages(cli.flags.cachefile, {
+				await downloadPackages(cli.flags.lockfile, {
 					manifest: path.join(manifestDir, "package-lock.json"),
 					rootFolder: cli.flags.outputDir,
 					localUrl: new URL(cli.flags.baseUrl),
@@ -161,15 +157,7 @@ async function harvest() {
 			fs.rmSync(manifestDir, { recursive: true, force: true });
 		}
 	}
-	logger.info("Updating lockfile.");
-	try {
-		updateLockfile(cli.flags.lockfile, newPackages);
-	} catch (e) {
-		logger.error(
-			`Failed to update lockfile. Reason: ${e.message || "Unknown"}`
-		);
-		logger.info(`Raw error:\n${JSON.stringify(e)}`);
-	}
+
 	logger.info("Done.");
 }
 

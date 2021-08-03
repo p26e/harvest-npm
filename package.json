@@ -2,8 +2,14 @@
   "name": "@p26e/harvest-npm",
   "version": "0.2.0",
   "description": "Harvest npm packages for offline use.",
-  "author": "@p26e",
+  "author": "p26e",
   "license": "MIT",
+  "homepage": "https://github.com/p26e/harvest-npm#readme",
+  "bugs": "https://github.com/p26e/harvest-npm/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/p26e/harvest-npm.git"
+  },
   "type": "module",
   "main": "src/index.js",
   "bin": {
