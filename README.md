@@ -30,7 +30,7 @@ alice@computer$ harvest-npm
 
 ## How it works
 
-TL;DR: Every time `harvest-npm` is executed, it will find all versions satisfying the given semver for each package specified in the pinfile. It will only download package versions that hasn't been downloaded before (according to the lockfile). The outputed directory can be served as static files to function as a read-only NPM registry.
+TL;DR: Every time `harvest-npm` is executed, it will find all versions satisfying the given semver for each package specified in the pinfile. It will only download package versions that hasn't previously been downloaded (according to the lockfile). The outputed directory can be served as static files to function as a read-only NPM registry.
 
 The key part of `harvest-npm` is to create a _pinfile_. The pinfile is a JSON file containing packages and corresponding [semver strings](https://semver.org/) (`harvest-npm` uses [this NPM package](https://github.com/npm/node-semver) to resolve matching packages). Let's see an example of a pinfile:
 
@@ -41,15 +41,15 @@ The key part of `harvest-npm` is to create a _pinfile_. The pinfile is a JSON fi
 }
 ```
 
-This pinfile contains two packages that `harvest-npm` should keep track of. The semver string (the value of the key-value style) specifies which versions that should be downloaded. `react`, the first package, wants all version with major version 17, and version 16.8.6. Every time `harvest-npm` is executed, it will find all packages that satisfies that requirement. At the time of writing, this equates to four packages: `17.0.0`, `17.0.1`, `17.0.2` (latest) and `16.8.6`. The second package, `better-sqlite3`, wants all versions (including major versions) greater than or equal to `7.4.3`. At the time of writing `7.4.3` is the latest version, thus only that version would be downloaded.
+This pinfile contains two packages that `harvest-npm` should keep track of. The semver string (the value of the key-value style) specifies which versions that should be downloaded. For the first package, `react`, this resolves to all version with major version 17, and version 16.8.6. Every time `harvest-npm` is executed, it will find all packages that satisfy this requirement. At the time of writing, this equates to four packages: `17.0.0`, `17.0.1`, `17.0.2` (latest) and `16.8.6`. The second package's semver, `>= 7.4.3`, resolves to all versions (including major versions) greater than or equal to `7.4.3`. At the time of writing `7.4.3` is the latest version, thus only that version would be downloaded.
 
 When package versions are downloaded, all their dependencies (and all their dependencies etc) are also dowloaded. When a package is downloaded its name and version (and other metadata) are written to a lock file (default `lockfile.json`). Before new packages are downloaded, `harvest-npm` will consult this file to see if the spesific version has already been downloaded. If it has, the package will be skipped to save bandwith (and time).
 
-The outputed directory (specified through the `--output-dir` option) can be served over http as static files, and function as a read-only NPM registry. Remember to set the `--base-url` to the URL you are going to serve the registry under (e.g. `https://mydomain.tld/path/to/registry`).
+The output directory (specified through the `--output-dir` option) can be served as static files over http and function as a read-only NPM registry. Remember to set the `--base-url` to the URL you are going to serve the registry under (e.g. `https://mydomain.tld/path/to/registry`).
 
 ## Docker
 
-We have created a docker image for ease of use. To use the docer image, mount a folder containing the pinfile at `/harvest-npm`. The files will be outputed to a `/harvest-npm/registry` and the script is automatically executed every time the pinfile changes.
+We have created a docker image for ease of use. To use the docker image, mount a folder containing the pinfile at `/harvest-npm`. The files will be written to a `/harvest-npm/registry` and the script is automatically executed every time the pinfile changes.
 
 Example:
 ```
@@ -109,7 +109,7 @@ Comma separated list of CPU architectures used when downloading pre-built binari
 <dd>
 Default: <code>'linux,darwin,win32'</code>
 <br />
-Comma separated list of OS platforms used when downloading pre-built binaries. Valid options: linux, darwin, win32,sunos, freebsd, openbsd, and aix.
+Comma separated list of OS platforms used when downloading pre-built binaries. Valid options: linux, darwin, win32, sunos, freebsd, openbsd, and aix.
 </dd>
 
 <dt>REGISTRY</dt>
