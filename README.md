@@ -49,7 +49,7 @@ The output directory (specified through the `--output-dir` option) can be served
 
 ## Docker
 
-We have created a docker image for ease of use. To use the docker image, mount a folder containing the pinfile at `/harvest-npm`. The files will be written to a `/harvest-npm/registry` and the script is automatically executed every time the pinfile changes.
+We have created a docker image for ease of use. To use the docker image, mount a folder containing the pinfile at `/harvest-npm`. The files will be written to `/harvest-npm/registry` and the script is automatically executed every time the pinfile changes.
 
 Example:
 ```
