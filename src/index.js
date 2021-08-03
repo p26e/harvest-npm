@@ -1,4 +1,6 @@
 import fs from "fs";
+import os from "os";
+import path from "path";
 import pacote from "pacote";
 import semver from "semver";
 import Arborist from "@npmcli/arborist";
@@ -37,7 +39,7 @@ export async function generateManifest(
 	registry = "https://registry.npmjs.org",
 	token = undefined
 ) {
-	const tempDir = fs.mkdtempSync(`.tmp_${pkg}_`);
+	const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), `${pkg}_`));
 	try {
 		const arb = new Arborist({ path: tempDir, registry, token });
 		await arb.buildIdealTree({ add: [pkg] });
@@ -50,36 +52,35 @@ export async function generateManifest(
 	return tempDir;
 }
 
-export function updateLockfile(filepath, newPackages) {
-	const lockfile = JSON.parse(fs.readFileSync(filepath));
-
-	for (const [pkg, versions] of Object.entries(newPackages)) {
-		const existing = lockfile[pkg] || [];
-		lockfile[pkg] = Array.from(new Set([...existing, ...versions]));
-	}
-
-	fs.writeFileSync(filepath, JSON.stringify(lockfile, null, 2));
-}
-
 export async function locateNewPackages(
 	pinfilePath,
 	lockfilePath,
 	registry = "https://registry.npmjs.org",
 	token
 ) {
-	if (!fs.existsSync(lockfilePath)) {
-		fs.writeFileSync(lockfilePath, "{}");
+	let lockfile = { dependencies: [] };
+
+	if (fs.existsSync(lockfilePath)) {
+		lockfile = JSON.parse(fs.readFileSync(lockfilePath));
 	}
 
 	const pkgs = JSON.parse(fs.readFileSync(pinfilePath));
-	const lockfile = JSON.parse(fs.readFileSync(lockfilePath));
+	const cache = new Set(lockfile.dependencies.map((dep) => dep.id));
 	const newPackages = {};
 
 	for (const [pkg, versionRange] of Object.entries(pkgs)) {
 		const versions = await getVersions(pkg, versionRange, registry, token);
-		if (!versions || versions.length === 0) return;
-		const existingVersions = new Set(lockfile[pkg] || []);
-		newPackages[pkg] = versions.filter((v) => !existingVersions.has(v));
+		if (!versions || versions.length === 0) {
+			logger.warn(
+				`Cannot find any versions for package '${pkg}' that satisfies '${versionRange}'.`
+			);
+			continue;
+		}
+		versions.forEach((version) => {
+			if (!cache.has(`${pkg}@${version}`)) {
+				newPackages[pkg] = [...(newPackages[pkg] || []), version];
+			}
+		});
 	}
 
 	return newPackages;
