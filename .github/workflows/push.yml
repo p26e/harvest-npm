@@ -25,11 +25,21 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           access: public
       
-      - name: Tag Git
+      - name: Bump version and push tag
         if: steps.publish-npm.outputs.type != 'none'
-        run: |
-          git tag -a v${{ steps.publish-npm.outputs.version }} -m "$(git log $(git describe --abbrev=0 --tags)...HEAD --pretty='* %s')"
-          git push --tags
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ github.token }}
+      
+      - name: Create a GitHub release
+        if: steps.publish-npm.outputs.type != 'none'
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
 
       - name: Container registry login
         if: steps.publish-npm.outputs.type != 'none'
