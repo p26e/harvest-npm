@@ -22,11 +22,11 @@ const cli = meow(
   Options
     --pinfile     Location of the pinfile. Default: pinfile.json.
     --lockfile    Location of the lockfile. Default: lockfile.json.
-    --outputDir   Direcotry to output packages in. Default: registry.
+    --outputDir   Direcotry to output packages in. Default: packages.
     --baseUrl     URL where the downloaded packages will be exposed, used when
                   generating metadata for packages. Only needed if you're going
 									to serve the output directory as static files. Default:
-									http://registry.local/npm
+									http://registry.npmjs.local/packages
     --abi         Node C++ ABI numbers used when downloading pre-built binaries.
                   Can be specified multiple times. See the  NODE_MODULE_VERSION
                   column at https://nodejs.org/en/download/releases/. Default:
@@ -58,11 +58,11 @@ const cli = meow(
 			},
 			outputDir: {
 				type: "string",
-				default: "registry",
+				default: "packages",
 			},
 			baseUrl: {
 				type: "string",
-				default: "http://registry.local/npm",
+				default: "http://registry.npmjs.local/packages",
 			},
 			abi: {
 				type: "number",

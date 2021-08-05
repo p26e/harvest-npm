@@ -1,12 +1,12 @@
 FROM node:16-alpine
 
-WORKDIR /harvest-npm
+WORKDIR /registry
 
 # Define defaults
-ENV PINFILE="/harvest-npm/pinfile.json"
-ENV LOCKFILE="/harvest-npm/lockfile.json"
-ENV OUTPUT_DIR="/harvest-npm/registry"
-ENV BASE_URL="http://registry.local/npm"
+ENV PINFILE="/registry/pinfile.json"
+ENV LOCKFILE="/registry/lockfile.json"
+ENV OUTPUT_DIR="/registry/packages"
+ENV BASE_URL="http://registry.npmjs.local/packages"
 ENV ABI="93,83,72"
 ENV ARCH="x64"
 ENV PLATFORM="linux,darwin,win32"

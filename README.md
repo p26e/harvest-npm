@@ -49,15 +49,15 @@ The output directory (specified through the `--output-dir` option) can be served
 
 ## Docker
 
-We have created a docker image for ease of use. To use the docker image, mount a folder containing the pinfile at `/harvest-npm`. The files will be written to `/harvest-npm/registry` and the script is automatically executed every time the pinfile changes.
+We have created a docker image for ease of use. To use the docker image, mount a folder containing the pinfile at `/registry`. The files will be written to `/registry/packages` and the script is automatically executed every time the pinfile changes.
 
 Example:
 ```
-alice@computer$ mkdir ~/harvest-npm
+alice@computer$ mkdir ~/registry
 
-alice@computer$ echo '{ "react": ">= 17" }' > ~/harvest-npm/pinfile.json
+alice@computer$ echo '{ "react": ">= 17" }' > ~/registry/pinfile.json
 
-alice@computer$ docker run -v /home/alice/harvest-npm:/harvest-npm ghcr.io/p26e/harvest-npm:latest
+alice@computer$ docker run -v /home/alice/registry:/registry ghcr.io/p26e/harvest-npm:latest
 ```
 
 The following options are available through environment variables:
@@ -65,28 +65,28 @@ The following options are available through environment variables:
 <dl>
 <dt>PINFILE</dt>
 <dd>
-Default: <code>'/harvest-npm/pinfile.json'</code>
+Default: <code>'/registry/pinfile.json'</code>
 <br />
 Location of the pinfile.
 </dd>
 
 <dt>LOCKFILE</dt>
 <dd>
-Default: <code>'/harvest-npm/lockfile.json'</code>
+Default: <code>'/registry/lockfile.json'</code>
 <br />
 Location of the lockfile.
 </dd>
 
 <dt>OUTPUT_DIR</dt>
 <dd>
-Default: <code>'/harvest-npm/registry'</code>
+Default: <code>'/registry/packages'</code>
 <br />
 Direcotry to output packages in.
 </dd>
 
 <dt>BASE_URL</dt>
 <dd>
-Default: <code>'http://registry.local/npm'</code>
+Default: <code>'http://registry.npmjs.local/packages'</code>
 <br />
 URL where the downloaded packages will be exposed, used when generating metadata for packages. Only needed if you're going to serve the output directory as static files.
 </dd>
