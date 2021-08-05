@@ -24,6 +24,12 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: public
+      
+      - name: Tag Git
+        if: steps.publish-npm.outputs.type != 'none'
+        run: |
+          git tag -a v${{ steps.publish-npm.outputs.version }} -m "$(git log $(git describe --abbrev=0 --tags)...HEAD --pretty='* %s')"
+          git push --tags
 
       - name: Container registry login
         if: steps.publish-npm.outputs.type != 'none'
