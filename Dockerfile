@@ -17,14 +17,14 @@ ENV SCHEDULE=""
 RUN npm i -g @p26e/harvest-npm
 
 ENTRYPOINT harvest-npm \
-	--pinfile $PINFILE \
-	--lockfile $LOCKFILE \
-	--baseUrl $BASE_URL \
-	--outputDir $OUTPUT_DIR \
+	--pinfile "$PINFILE" \
+	--lockfile "$LOCKFILE" \
+	--baseUrl "$BASE_URL" \
+	--outputDir "$OUTPUT_DIR" \
 	--abi ${ABI//,/ --abi } \
 	--platform ${PLATFORM//,/ --platform } \
 	--arch ${ARCH//,/ --arch } \
-	--registry $REGISTRY \
-	--token $TOKEN \
-	--schedule $SCHEDULE \
+	--registry "$REGISTRY" \
+	--token "$TOKEN" \
+	--schedule "$SCHEDULE" \
 	--watch
