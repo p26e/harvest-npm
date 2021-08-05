@@ -39,7 +39,7 @@ export async function generateManifest(
 	registry = "https://registry.npmjs.org",
 	token = undefined
 ) {
-	const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), `${pkg}_`));
+	const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "harvest-npm_"));
 	try {
 		const arb = new Arborist({ path: tempDir, registry, token });
 		await arb.buildIdealTree({ add: [pkg] });
