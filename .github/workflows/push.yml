@@ -31,6 +31,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v5.6
         with:
           github_token: ${{ github.token }}
+          custom_tag: ${{ steps.publish-npm.outputs.version }}
       
       - name: Create a GitHub release
         if: steps.publish-npm.outputs.type != 'none'
@@ -38,7 +39,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
       - name: Container registry login
