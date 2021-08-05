@@ -27,10 +27,17 @@ jobs:
       
       - name: Tag new version
         if: steps.publish-npm.outputs.type != 'none'
-        uses: mathieudutour/github-tag-action@v5.6
+        run: |
+          git config user.name github-action
+          git config user.email github-action@example.com
+          git tag v${{ steps.publish-npm.outputs.version }}
+          git push --tags
+      
+      - name: Create GitHub release
+        if: steps.publish-npm.outputs.type != 'none'
+        uses: softprops/action-gh-release@v1
         with:
-          github_token: ${{ github.token }}
-          custom_tag: ${{ steps.publish-npm.outputs.version }}
+          tag_name: v${{ steps.publish-npm.outputs.version }}
 
       - name: Container registry login
         if: steps.publish-npm.outputs.type != 'none'
