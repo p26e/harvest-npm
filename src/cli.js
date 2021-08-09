@@ -183,7 +183,9 @@ async function run() {
 		});
 }
 
-run().then(() => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+run().then(async () => {
 	let inProgress = false;
 
 	if (cli.flags.schedule) {
@@ -212,22 +214,14 @@ run().then(() => {
 	if (cli.flags.watch) {
 		logger.info(`Watching pinfile (${cli.flags.pinfile})`);
 		let checksum = md5(fs.readFileSync(cli.flags.pinfile));
-		fs.watchFile(cli.flags.pinfile, async () => {
-			if (inProgress) return;
-			inProgress = true;
-			try {
-				const newChecksum = md5(fs.readFileSync(cli.flags.pinfile));
-				if (checksum !== newChecksum) {
-					logger.info("Change detected");
-					await run();
-				}
-			} catch (e) {
-				logger.error(
-					`Something went wrong. Error:\n${JSON.stringify(e, null, 2)}`
-				);
-			} finally {
-				inProgress = false;
+		while (true) {
+			const currentChecksum = md5(fs.readFileSync(cli.flags.pinfile));
+			if (checksum !== currentChecksum) {
+				logger.info(`Triggered by watch (${cli.flags.pinfile})`);
+				await run();
+				checksum = currentChecksum;
 			}
-		});
+			await delay(1000 * 10); // sleep 10 seconds
+		}
 	}
 });
