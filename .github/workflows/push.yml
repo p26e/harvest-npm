@@ -35,9 +35,9 @@ jobs:
       
       - name: Create GitHub release
         if: steps.publish-npm.outputs.type != 'none'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.publish-npm.outputs.version }}
+        run: gh release create v${{ steps.publish-npm.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Container registry login
         if: steps.publish-npm.outputs.type != 'none'
